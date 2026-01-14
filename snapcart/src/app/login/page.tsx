@@ -18,20 +18,34 @@ function Login() {
     const router=useRouter()
     const session=useSession()
     console.log(session)
-    const handleLogin=async(e:FormEvent)=>{
-        e.preventDefault()
-        setLoading(true)
-   try {
-    await signIn("credentials",{
-        email,password
+    const handleLogin = async (e: FormEvent) => {
+  e.preventDefault()
+  setLoading(true)
+
+  try {
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false   
     })
-    router.push("/")
+
+    if (res?.ok) {
+      router.push("/") 
+    } else {
+      console.log(res?.error)
+    }
+
     setLoading(false)
-   } catch (error) {
+  } catch (error) {
     console.log(error)
     setLoading(false)
-   }
-    }
+  }
+}
+React.useEffect(() => {
+  if (session.status === "authenticated") {
+    router.push("/")
+  }
+}, [session])
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen
